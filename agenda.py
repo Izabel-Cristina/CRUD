@@ -1,66 +1,49 @@
-import os
-import sqlite3
-from sqlite3 import Error
+import sqlite3 
+conn = sqlite3.connect('agenda.db')
+c = conn.cursor()
 
-##Conexão
-def conexaoBanco():
-    caminho = 'C:\\Users\\usuario\\Desktop\\Python\Projeto\\agenda.db'
-    con = None
-    try:
-        con = sqlite3.connect(caminho)
-    except Error as ex:
-        print(ex)
-    return con
 
-vcon = conexaoBanco()
-
-def menuPrincipal():
-    os.system("csl")
-    print('1 - Inserir Novo Contato')
-    print('2 - Deletar Contato')
-    print('3 - Atualizar Contato ')
-    print('4 - Consultar registro por Nome')
-    print('5 - Sair')
-
-def menuInserir():
-    print()
-
-def menuDeletar():
-    print()
- 
-def menuAtualizar():
-    print()
-
-def menuConsultar():
-    print()
-
-opc = 0
-while opc!=6:
-    menuPrincipal()
-    opc = int(input('Digite uma opção:'))
-    if opc == 1:
-        menuInserir()
-    elif opc==2:
-        menuDeletar()
-    elif opc==3:
-        menuAtualizar()
-    elif opc==4:
-        menuConsultar()
-    elif opc ==5:
-        os.system('cls')
-        print('Programa Finalizado. ')
-    else:
-        os.system('cls')
-        print('opção invalida. ')
-        os.system('pause')
-os.system('pause')
-
+def criar_tabela():
+    c.execute('CREATE TABLE IF NOT EXISTS agenda (Nome TEXTO(30), Telefone TEXTO(14), Email TEXTO(30))')
+    print('tabela criada!')
     
+def ler_tabela():
+    c.execute('SELECT * FROM agenda;')
+    for linha in c.fetchall():
+        print(linha)
+    
+def alterar_dados():
+    nome_alt = input('Informe o nome: ')
+    telefone_alt =input('Informe o telefone: ') 
+    email_alt = input('Informe o email: ')
+    c.execute('''UPDATE AGENDA
+    SET nome = ?, telefone = ?, email = ?''', (nome_alt, telefone_alt, email_alt))
+    conn.commit()
+    print('Dados atualizados!')
 
 
 
+def inserir_dados():
+    nome = input('Informe o nome: ')
+    telefone =input('Informe o telefone: ') 
+    email = input('Informe o email: ')
+    c.execute("INSERT INTO agenda(Nome, Telefone, Email) VALUES(?,?,?)", (nome, telefone, email))
+    print('Contato salvo com sucesso')
 
+def deletar_dados():
+    nome = input('Informe o nome do contato que deseja deletar: ')
+    c.execute('''
+    DELETE FROM agenda WHERE nome = ?
+    ''', (nome)
+    )
+    print('Contato excluido com sucesso!')
 
+criar_tabela()
+ler_tabela()
+alterar_dados()
+inserir_dados()
+deletar_dados()
 
-
-
+conn.commit()
+c.close()
+conn.close()
