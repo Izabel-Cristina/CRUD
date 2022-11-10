@@ -15,7 +15,7 @@ def criar_tabela():
             Telefone INTEREGER(14));"""
     cursor.execute(tabela)
     print("Tabela criada com sucesso!")
-    
+
 
 def ler_agenda():
     cursor.execute(""" SELECT*FROM AGENDA1;
@@ -24,23 +24,41 @@ def ler_agenda():
         print(linha)
         
 def inserir_dado():
-    nome= input("Informe o nome: ")
-    email=input("Informe o email: ")
-    telefone=int(input("Informe o telefone: "))
-    cursor.execute(""" INSERT INTO AGENDA1(nome, email, telefone) VALUES (?,?,?) """,(nome, email, telefone))
-    c.commit()
-    print('Dados Inseridos com Sucesso!')
-
+    while True: 
+        try:  
+            nome= input("Informe o nome: ")
+            if len(nome)<=2:
+                print('Nome Inválido! Tente novamente!')
+                return
+            email=input("Informe o email: ")
+            telefone=int(input("Informe o telefone: "))
+            pass
+        except ValueError:
+            return input('Informe os dados corretamente!')
+        
+        cursor.execute(""" INSERT INTO AGENDA1(nome, email, telefone) VALUES (?,?,?) """,(nome, email, telefone))
+        c.commit()
+        print('Dados Inseridos com Sucesso!')
+        return
 def alterar_dado():
-    nome= input("Informe o nome: ")
-    novo_email =input("Informe o novo email: ")
-    novo_telefone = int(input("Informe o  novo telefone: "))
-    cursor.execute("""UPDATE AGENDA1 
+   while True: 
+        try:  
+            nome= input("Informe o nome: ")
+            if len(nome)<=2:
+                print('Nome Inválido! Tente novamente!')
+                return
+            novo_email=input("Informe o email: ")
+            novo_telefone=int(input("Informe o telefone: "))
+            pass
+        except ValueError:
+            print("Informe os dados")
+            return
+        cursor.execute("""UPDATE AGENDA1 
                     SET email = ?, telefone = ?
-                    WHERE nome = ?""", (novo_email, novo_telefone, nome))
-    c.commit()
-    print('Dados atualizados com sucesso!')
-    
+                    WHERE nome = ?""", (novo_email, novo_telefone,nome))
+        c.commit()
+        print('Dados atualizados com sucesso!')
+        return
 
 def delete_contato():
     nome= input("Informe o nome do contato que deseja excluir: ")
@@ -64,20 +82,22 @@ print("""
 """)
 opc = 0
 while opc!=6:
-    opc = int(input('Informe a opção desejada: '))
-    if opc ==1:
-        criar_tabela()
-    elif opc ==2:
-        ler_agenda()
-    elif opc ==3:
-        inserir_dado()
-    elif opc == 4:
-        alterar_dado()
-    elif opc == 5:
-        delete_contato()
-    elif opc == 6:
-        print("Finalizado com sucesso")
-        c.close
-    else:
-        print("Opção Invalida!")
+    try:
+        opc = int(input('Informe a opção desejada: '))
+        print()
+        if opc ==1:
+         criar_tabela()
+        elif opc ==2:
+         ler_agenda()
+        elif opc ==3:
+            inserir_dado()
+        elif opc == 4:
+            alterar_dado()
+        elif opc == 5:
+         delete_contato()
+        elif opc == 6:
+         print("Finalizado com sucesso")
+         c.close
+    except ValueError:
+        print('Opção Inválida! Informe a opção correta! ')
 
